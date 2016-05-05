@@ -49,6 +49,10 @@ public class AllProductsActivity extends ListActivity {
     private static final String TAG_PRODUCTS = "products";
     private static final String TAG_PID = "pid";
     private static final String TAG_NAME = "name";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_NDESCRIPTION = "ndescription";
+    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_NEWSPIC = "newspic";
 
     // products JSONArray
     JSONArray products = null;
@@ -107,7 +111,7 @@ public class AllProductsActivity extends ListActivity {
 
     }
 
-    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, int pid) {
+    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, int pid, String ndesc) {
 
         View popupView = inflater.inflate(R.layout.popuplayout, container, false);
 
@@ -120,7 +124,7 @@ public class AllProductsActivity extends ListActivity {
         TextView tv3 = (TextView) popupView.findViewById(R.id.poptext3);
 
         tv1.setText(Integer.toString(pid));
-        tv2.setText("Popsadfsdf");
+        tv2.setText(ndesc);
         tv3.setText("Popdfgdsfgsdasdfasdfkjhgkjhgkjgkjhgkjhgkjghkjghkjhgkjhgkjhkkkkk");
 
 
@@ -187,15 +191,21 @@ public class AllProductsActivity extends ListActivity {
                         JSONObject c = products.getJSONObject(i);
 
                         // Storing each json item in variable
-                        String id = c.getString(TAG_PID);
-                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String title = c.getString(TAG_TITLE);
+                        String author = c.getString(TAG_AUTHOR);
+                        String ndescription = c.getString(TAG_NDESCRIPTION);
+                        String newspic = c.getString(TAG_NEWSPIC);
 
                         // creating new HashMap
                         HashMap<String, String> map = new HashMap<String, String>();
 
                         // adding each child node to HashMap key => value
-                        map.put(TAG_PID, id);
-                        map.put(TAG_NAME, name);
+                        map.put(TAG_PID, pid);
+                        map.put(TAG_TITLE, title);
+                        map.put(TAG_AUTHOR, author);
+                        map.put(TAG_NDESCRIPTION, ndescription);
+                        map.put(TAG_NEWSPIC, newspic);
 
                         // adding HashList to ArrayList
                         productsList.add(map);
@@ -230,9 +240,9 @@ public class AllProductsActivity extends ListActivity {
                      * */
                     ListAdapter adapter = new SimpleAdapter(
                             AllProductsActivity.this, productsList,
-                            R.layout.list_item, new String[] { TAG_PID,
-                            TAG_NAME},
-                            new int[] { R.id.pid, R.id.name });
+                            R.layout.list_item, new String[]{TAG_PID,
+                            TAG_TITLE, TAG_AUTHOR, TAG_NDESCRIPTION, TAG_NEWSPIC},
+                            new int[]{R.id.pid, R.id.title, R.id.author, R.id.ndescription, R.id.newspic});
                     // updating listview
                     setListAdapter(adapter);
                 }

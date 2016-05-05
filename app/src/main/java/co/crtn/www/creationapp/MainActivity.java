@@ -84,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_PRODUCTS = "products";
     private static final String TAG_PID = "pid";
     private static final String TAG_NAME = "name";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_NDESCRIPTION = "ndescription";
+    private static final String TAG_AUTHOR = "author";
+    private static final String TAG_NEWSPIC = "newspic";
 
     // products JSONArray
     JSONArray products = null;
@@ -275,9 +279,10 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(json);
                             int n = obj.getInt("pid");
+                            String ndesc = obj.getString("TAG_NDESCRIPTION");
                             Log.d("My App", Integer.toString(n));
                             AllProductsActivity apa = new AllProductsActivity();
-                            apa.ShowPopup(view, container, inflater, n);
+                            apa.ShowPopup(view, container, inflater, n, ndesc);
 
                         } catch (Throwable t) {
                             Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -441,13 +446,13 @@ public class MainActivity extends AppCompatActivity {
             // Return a PlaceholderFragment (defined as a static inner class below).
 
             if (position == 0) {
-
+                new LoadAllProducts().execute();
                 return NewsFragment.newInstance(position + 1);
             } else if (position == 1) {
 
                 return StoreFragment.newInstance(position + 1);
             } else {
-                new LoadAllProducts().execute();
+
                 return PlaceholderFragment.newInstance(position + 1);
             }
         }
@@ -485,7 +490,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Loading products. Please wait...");
+            pDialog.setMessage("Loading news. Please wait...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -506,8 +511,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Checking for SUCCESS TAG
                 int success = json.getInt(TAG_SUCCESS);
+                Log.d("title: ", "1");
 
                 if (success == 1) {
+                    Log.d("title: ", "2");
                     // products found
                     // Getting Array of Products
                     products = json.getJSONArray(TAG_PRODUCTS);
@@ -517,15 +524,22 @@ public class MainActivity extends AppCompatActivity {
                         JSONObject c = products.getJSONObject(i);
 
                         // Storing each json item in variable
-                        String id = c.getString(TAG_PID);
-                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String title = c.getString(TAG_TITLE);
+                        String author = c.getString(TAG_AUTHOR);
+                        String ndescription = c.getString(TAG_NDESCRIPTION);
+                        String newspic = c.getString(TAG_NEWSPIC);
+
 
                         // creating new HashMap
                         HashMap<String, String> map = new HashMap<String, String>();
 
                         // adding each child node to HashMap key => value
-                        map.put(TAG_PID, id);
-                        map.put(TAG_NAME, name);
+                        map.put(TAG_PID, pid);
+                        map.put(TAG_TITLE, title);
+                        map.put(TAG_AUTHOR, author);
+                        map.put(TAG_NDESCRIPTION, ndescription);
+                        map.put(TAG_NEWSPIC, newspic);
 
                         // adding HashList to ArrayList
                         productsList.add(map);
@@ -561,8 +575,8 @@ public class MainActivity extends AppCompatActivity {
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, productsList,
                             R.layout.list_item, new String[]{TAG_PID,
-                            TAG_NAME},
-                            new int[]{R.id.pid, R.id.name});
+                            TAG_TITLE, TAG_AUTHOR, TAG_NDESCRIPTION, TAG_NEWSPIC},
+                            new int[]{R.id.pid, R.id.title, R.id.author, R.id.ndescription, R.id.newspic});
                     // updating listview
                     ListView myList = (ListView) findViewById(android.R.id.list);
                     myList.setAdapter(adapter);
@@ -572,10 +586,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
-
-
 
 
 }
