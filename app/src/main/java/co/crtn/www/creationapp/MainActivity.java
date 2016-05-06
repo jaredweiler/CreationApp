@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_NDESCRIPTION = "ndescription";
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_NEWSPIC = "newspic";
+    private static final String TAG_JSONSTRING = "jsonstring";
 
     // products JSONArray
     JSONArray products = null;
@@ -276,13 +277,21 @@ public class MainActivity extends AppCompatActivity {
                                             int position, long id) {
                         String json = lv.getItemAtPosition(position).toString();
 
+
+
+                        String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                        Log.d("string: ", requiredString);
+
+
                         try {
-                            JSONObject obj = new JSONObject(json);
-                            int n = obj.getInt("pid");
-                            String ndesc = obj.getString("TAG_NDESCRIPTION");
-                            Log.d("My App", Integer.toString(n));
+                            JSONObject obj = new JSONObject(requiredString);
+                            String ndesc = obj.getString("ndescription");
+                            String title = obj.getString("title");
+                            String newspic = obj.getString("newspic");
+                            String author = obj.getString("author");
+                            //Log.d("My App", n);
                             AllProductsActivity apa = new AllProductsActivity();
-                            apa.ShowPopup(view, container, inflater, n, ndesc);
+                            apa.ShowPopup(view, container, inflater, title, author, ndesc, newspic);
 
                         } catch (Throwable t) {
                             Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -529,6 +538,7 @@ public class MainActivity extends AppCompatActivity {
                         String author = c.getString(TAG_AUTHOR);
                         String ndescription = c.getString(TAG_NDESCRIPTION);
                         String newspic = c.getString(TAG_NEWSPIC);
+                        String jsonstring = c.toString();
 
 
                         // creating new HashMap
@@ -540,6 +550,7 @@ public class MainActivity extends AppCompatActivity {
                         map.put(TAG_AUTHOR, author);
                         map.put(TAG_NDESCRIPTION, ndescription);
                         map.put(TAG_NEWSPIC, newspic);
+                        map.put(TAG_JSONSTRING, jsonstring);
 
                         // adding HashList to ArrayList
                         productsList.add(map);
@@ -575,8 +586,8 @@ public class MainActivity extends AppCompatActivity {
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, productsList,
                             R.layout.list_item, new String[]{TAG_PID,
-                            TAG_TITLE, TAG_AUTHOR, TAG_NDESCRIPTION, TAG_NEWSPIC},
-                            new int[]{R.id.pid, R.id.title, R.id.author, R.id.ndescription, R.id.newspic});
+                            TAG_TITLE, TAG_AUTHOR, TAG_NDESCRIPTION, TAG_NEWSPIC, TAG_JSONSTRING},
+                            new int[]{R.id.pid, R.id.title, R.id.author, R.id.ndescription, R.id.newspic, R.id.jsonstring});
                     // updating listview
                     ListView myList = (ListView) findViewById(android.R.id.list);
                     myList.setAdapter(adapter);

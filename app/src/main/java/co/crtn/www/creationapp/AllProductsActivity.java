@@ -1,13 +1,23 @@
 package co.crtn.www.creationapp;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 
 import android.app.ListActivity;
@@ -24,10 +34,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.view.LayoutInflater;
+import org.apache.http.*;
 
 public class AllProductsActivity extends ListActivity {
 
@@ -111,7 +123,7 @@ public class AllProductsActivity extends ListActivity {
 
     }
 
-    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, int pid, String ndesc) {
+    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, String title, String author, String desc, String newspic) {
 
         View popupView = inflater.inflate(R.layout.popuplayout, container, false);
 
@@ -119,13 +131,31 @@ public class AllProductsActivity extends ListActivity {
         PopupWindow popupWindow = new PopupWindow(popupView, 600, 600);
 
         // Example: If you have a TextView inside `popup_layout.xml`
-        TextView tv1 = (TextView) popupView.findViewById(R.id.poptext1);
-        TextView tv2 = (TextView) popupView.findViewById(R.id.poptext2);
-        TextView tv3 = (TextView) popupView.findViewById(R.id.poptext3);
+        TextView tv_title = (TextView) popupView.findViewById(R.id.poptext1);
+        TextView tv2_author = (TextView) popupView.findViewById(R.id.poptext2);
+        TextView tv3_desc = (TextView) popupView.findViewById(R.id.poptext3);
 
-        tv1.setText(Integer.toString(pid));
-        tv2.setText(ndesc);
-        tv3.setText("Popdfgdsfgsdasdfasdfkjhgkjhgkjgkjhgkjhgkjghkjghkjhgkjhgkjhkkkkk");
+        tv_title.setText(title);
+        String fullauthor = ("By: " + author);
+        tv2_author.setText(fullauthor);
+        tv3_desc.setText(desc);
+        ImageView img = (ImageView) popupView.findViewById(R.id.image);
+
+
+
+
+        try {
+            URL url = new URL("http://www.crtn.co/wp-content/uploads/IMG_2004-120x120.jpg");
+            InputStream content = (InputStream) url.getContent();
+            Drawable d = Drawable.createFromStream(content, "src");
+            img.setImageDrawable(d);
+        }
+        catch(Throwable t){
+            Log.d("My App", "CANT LOAD IMAGE");
+        }
+
+
+
 
 
 
