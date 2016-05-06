@@ -123,35 +123,40 @@ public class AllProductsActivity extends ListActivity {
 
     }
 
-    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, String title, String author, String desc, String newspic) {
+    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, String title, String author, String desc, String newspic, int pid) {
 
         View popupView = inflater.inflate(R.layout.popuplayout, container, false);
 
         //PopupWindow popupWindow = new PopupWindow(popupView, GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
-        PopupWindow popupWindow = new PopupWindow(popupView, 600, 600);
+        PopupWindow popupWindow = new PopupWindow(popupView, 600, 800);
 
         // Example: If you have a TextView inside `popup_layout.xml`
         TextView tv_title = (TextView) popupView.findViewById(R.id.poptext1);
         TextView tv2_author = (TextView) popupView.findViewById(R.id.poptext2);
         TextView tv3_desc = (TextView) popupView.findViewById(R.id.poptext3);
+        TextView tv4_date = (TextView) popupView.findViewById(R.id.poptextdate);
 
         tv_title.setText(title);
+        String fulldate = ("Date: " + newspic);
+        tv4_date.setText(fulldate);
         String fullauthor = ("By: " + author);
         tv2_author.setText(fullauthor);
         tv3_desc.setText(desc);
         ImageView img = (ImageView) popupView.findViewById(R.id.image);
 
-
-
-
-        try {
-            URL url = new URL("http://www.crtn.co/wp-content/uploads/IMG_2004-120x120.jpg");
-            InputStream content = (InputStream) url.getContent();
-            Drawable d = Drawable.createFromStream(content, "src");
-            img.setImageDrawable(d);
-        }
-        catch(Throwable t){
-            Log.d("My App", "CANT LOAD IMAGE");
+        switch (pid) {
+            case 0:
+                Log.d("Switch: ", "0");
+                img.setImageResource(R.drawable.carina);
+                break;
+            case 1:
+                Log.d("Switch: ", "1");
+                img.setImageResource(R.drawable.dano);
+                break;
+            case 2:
+                Log.d("Switch: ", "2");
+                img.setImageResource(R.drawable.carina);
+                break;
         }
 
 

@@ -70,28 +70,35 @@ public class MainActivity extends AppCompatActivity {
 
     // Progress Dialog
     private ProgressDialog pDialog;
+    private ProgressDialog pDialog1;
 
     // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
 
     ArrayList<HashMap<String, String>> productsList;
+    ArrayList<HashMap<String, String>> shirtsproductsList;
 
     // url to get all products list
     private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
+    private static String url_shirts = "http://10.0.2.2:8080/android_connect/get_shirts.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
+    private static final String TAG_SHIRTS_SUCCESS = "success";
     private static final String TAG_PRODUCTS = "products";
+    private static final String TAG_SHIRTS_PRODUCTS = "products";
     private static final String TAG_PID = "pid";
-    private static final String TAG_NAME = "name";
+    private static final String TAG_SHIRTS_NAME = "name";
     private static final String TAG_TITLE = "title";
     private static final String TAG_NDESCRIPTION = "ndescription";
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_NEWSPIC = "newspic";
     private static final String TAG_JSONSTRING = "jsonstring";
+    private static final String TAG_SHIRTS_PID = "pid";
 
     // products JSONArray
     JSONArray products = null;
+    JSONArray shirtsproducts = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -130,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Hashmap for ListView
         productsList = new ArrayList<HashMap<String, String>>();
+        shirtsproductsList = new ArrayList<HashMap<String, String>>();
         // Get listview
         //ListView lv = getListView();
 
@@ -230,7 +238,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            final View rootView = inflater.inflate(R.layout.shirts_list, container, false);
+            //final ListView lv = (ListView) rootView.findViewById(R.id.shirtslist);
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText("Hello");
             return rootView;
@@ -289,9 +298,11 @@ public class MainActivity extends AppCompatActivity {
                             String title = obj.getString("title");
                             String newspic = obj.getString("newspic");
                             String author = obj.getString("author");
+                            String stringid = obj.getString("pid");
+                            int pid = Integer.parseInt(stringid);
                             //Log.d("My App", n);
                             AllProductsActivity apa = new AllProductsActivity();
-                            apa.ShowPopup(view, container, inflater, title, author, ndesc, newspic);
+                            apa.ShowPopup(view, container, inflater, title, author, ndesc, newspic, pid);
 
                         } catch (Throwable t) {
                             Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -334,10 +345,56 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.store_fragment, container, false);
             final Button shirts = (Button) rootView.findViewById(R.id.btnViewShirts);
-            shirts.setText("View Shirts!");
-            Button hats = (Button) rootView.findViewById(R.id.btnViewHats);
-            hats.setText("View Hats!");
+            final Button misc = (Button) rootView.findViewById(R.id.btnViewMisc);
+            final Button sweaters = (Button) rootView.findViewById(R.id.btnViewSweaters);
+            final Button hoodies = (Button) rootView.findViewById(R.id.btnViewHoodies);
+            final Button all = (Button) rootView.findViewById(R.id.btnViewAll);
+            final Button jackets = (Button) rootView.findViewById(R.id.btnViewJackets);
+            //final View listView = inflater.inflate(R.layout.shirts_list, container, false);
+            //final RelativeLayout RL = (RelativeLayout) container.findViewById(R.id.RL);
+
+
+
+
+            misc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //final RelativeLayout RL = (RelativeLayout) container.findViewById(R.id.RL);
+                    //RL.setVisibility(View.INVISIBLE);
+                    //LV.setVisibility(View.VISIBLE);
+
+                }
+            });
+
             shirts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                }
+            });
+            sweaters.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                }
+            });
+            hoodies.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                }
+            });
+            jackets.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                }
+            });
+            all.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
@@ -378,20 +435,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.news_button, container, false);
-            //TextView textView = (TextView) rootView.findViewById(R.id.test_label);
-            //textView.setText("store frag!")
+            final View rootView = inflater.inflate(R.layout.shirts_list, container, false);
+            final ListView lv = (ListView) rootView.findViewById(R.id.shirtslist);
 
-            btnViewProducts = (Button) rootView.findViewById(R.id.btnViewProducts);
-            btnViewProducts.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Launching All products Activity
-                    Intent i = new Intent(getActivity().getApplicationContext(), AllProductsActivity.class);
-                    startActivity(i);
 
-                }
-            });
+
 
             return rootView;
 
@@ -458,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
                 new LoadAllProducts().execute();
                 return NewsFragment.newInstance(position + 1);
             } else if (position == 1) {
-
+                new LoadShirts().execute();
                 return StoreFragment.newInstance(position + 1);
             } else {
 
@@ -499,7 +547,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("Loading news. Please wait...");
+            pDialog.setMessage("Loading NEWS. Please wait...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -590,6 +638,116 @@ public class MainActivity extends AppCompatActivity {
                             new int[]{R.id.pid, R.id.title, R.id.author, R.id.ndescription, R.id.newspic, R.id.jsonstring});
                     // updating listview
                     ListView myList = (ListView) findViewById(android.R.id.list);
+                    myList.setAdapter(adapter);
+                }
+            });
+
+        }
+
+    }
+
+    /**
+     * Background Async Task to Load all product by making HTTP Request
+     */
+    class LoadShirts extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog1 = new ProgressDialog(MainActivity.this);
+            pDialog1.setMessage("Loading shirts. Please wait...");
+            pDialog1.setIndeterminate(false);
+            pDialog1.setCancelable(false);
+            pDialog1.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_shirts, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Shirts: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+                Log.d("shirts: ", "1");
+
+                if (success == 1) {
+                    Log.d("shirts: ", "2");
+                    // products found
+                    // Getting Array of Products
+                    shirtsproducts = json.getJSONArray(TAG_SHIRTS_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < shirtsproducts.length(); i++) {
+                        JSONObject c = shirtsproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String pid = c.getString(TAG_SHIRTS_PID);
+                        String name = c.getString(TAG_SHIRTS_NAME);
+
+                        String jsonstring = c.toString();
+                        Log.d("pid: ", pid);
+                        Log.d("name: ", name);
+                        Log.d("json: ", jsonstring);
+
+
+                        // creating new HashMap
+                        HashMap<String, String> shirtsmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        shirtsmap.put(TAG_SHIRTS_PID, pid);
+                        shirtsmap.put(TAG_SHIRTS_NAME, name);
+
+                        shirtsmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        shirtsproductsList.add(shirtsmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog1.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, shirtsproductsList,
+                            R.layout.shirts_list_item, new String[]{TAG_SHIRTS_PID,
+                            TAG_SHIRTS_NAME, TAG_JSONSTRING},
+                            new int[]{R.id.pid, R.id.name, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.shirtslist);
                     myList.setAdapter(adapter);
                 }
             });
