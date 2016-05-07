@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> allproductsList;
 
     // url to get all products list
+    /*
     private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
     private static String url_shirts = "http://10.0.2.2:8080/android_connect/get_shirts.php";
     private static String url_jackets = "http://10.0.2.2:8080/android_connect/get_jackets.php";
@@ -100,6 +101,16 @@ public class MainActivity extends AppCompatActivity {
     private static String url_hoodies = "http://10.0.2.2:8080/android_connect/get_hoodies.php";
     private static String url_misc = "http://10.0.2.2:8080/android_connect/get_misc.php";
     private static String url_all = "http://10.0.2.2:8080/android_connect/get_all.php";
+*/
+
+    private static String url_all_products = "http://192.168.0.192:8080/android_connect/get_all_products.php";
+    private static String url_shirts = "http://192.168.0.192:8080/android_connect/get_shirts.php";
+    private static String url_jackets = "http://192.168.0.192:8080/android_connect/get_jackets.php";
+    private static String url_sweaters = "http://192.168.0.192:8080/android_connect/get_sweaters.php";
+    private static String url_hoodies = "http://192.168.0.192:8080/android_connect/get_hoodies.php";
+    private static String url_misc = "http://192.168.0.192:8080/android_connect/get_misc.php";
+    private static String url_all = "http://192.168.0.192:8080/android_connect/get_all.php";
+    
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
