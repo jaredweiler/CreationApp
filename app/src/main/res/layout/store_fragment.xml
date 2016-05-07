@@ -13,6 +13,7 @@ tools:context="co.crtn.www.creationapp.MainActivity$StoreFragment">
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="horizontal"
+        android:id="@+id/gl1"
         android:columnCount="2"
         android:rowCount="4">
 
@@ -91,6 +92,141 @@ tools:context="co.crtn.www.creationapp.MainActivity$StoreFragment">
             android:visibility="invisible"
             android:clickable="false"
             />
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:id="@+id/shirtsgrid"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:visibility="invisible">
+
+    <Button android:id="@+id/shirtsbackbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:clickable="false"
+        android:layout_column="0"
+        android:layout_row="0"
+        />
+
+    <ListView
+        android:id="@+id/shirtslist1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"/>
+
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:id="@+id/jacketsgrid"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:visibility="invisible">
+
+        <Button android:id="@+id/jacketsbackbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:clickable="false"
+            android:layout_column="0"
+            android:layout_row="0"
+            />
+
+        <ListView
+            android:id="@+id/jacketslist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"/>
+
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:id="@+id/sweatersgrid"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:visibility="invisible">
+
+        <Button android:id="@+id/sweatersbackbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:clickable="false"
+            android:layout_column="0"
+            android:layout_row="0"
+            />
+
+        <ListView
+            android:id="@+id/sweaterslist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"/>
+
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:id="@+id/hoodiesgrid"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:visibility="invisible">
+
+        <Button android:id="@+id/hoodiesbackbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:clickable="false"
+            android:layout_column="0"
+            android:layout_row="0"
+            />
+
+        <ListView
+            android:id="@+id/hoodieslist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"/>
+
+    </GridLayout>
+
+    <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:id="@+id/miscgrid"
+        android:columnCount="1"
+        android:rowCount="2"
+        android:visibility="invisible">
+
+        <Button android:id="@+id/miscbackbutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:clickable="false"
+            android:layout_column="0"
+            android:layout_row="0"
+            />
+
+        <ListView
+            android:id="@+id/misclist"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="1"/>
+
     </GridLayout>
 
 </RelativeLayout>

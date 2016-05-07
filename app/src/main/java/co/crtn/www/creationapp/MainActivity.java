@@ -68,42 +68,60 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
 
+
     // Progress Dialog
     private ProgressDialog pDialog;
     private ProgressDialog pDialog1;
+    private ProgressDialog pDialog2;
+    private ProgressDialog pDialog3;
+    private ProgressDialog pDialog4;
+    private ProgressDialog pDialog5;
 
     // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
 
     ArrayList<HashMap<String, String>> productsList;
     ArrayList<HashMap<String, String>> shirtsproductsList;
+    ArrayList<HashMap<String, String>> jacketsproductsList;
+    ArrayList<HashMap<String, String>> sweatersproductsList;
+    ArrayList<HashMap<String, String>> hoodiesproductsList;
+    ArrayList<HashMap<String, String>> miscproductsList;
 
     // url to get all products list
     private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
     private static String url_shirts = "http://10.0.2.2:8080/android_connect/get_shirts.php";
+    private static String url_jackets = "http://10.0.2.2:8080/android_connect/get_jackets.php";
+    private static String url_sweaters = "http://10.0.2.2:8080/android_connect/get_sweaters.php";
+    private static String url_hoodies = "http://10.0.2.2:8080/android_connect/get_hoodies.php";
+    private static String url_misc = "http://10.0.2.2:8080/android_connect/get_misc.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
-    private static final String TAG_SHIRTS_SUCCESS = "success";
     private static final String TAG_PRODUCTS = "products";
-    private static final String TAG_SHIRTS_PRODUCTS = "products";
     private static final String TAG_PID = "pid";
-    private static final String TAG_SHIRTS_NAME = "name";
+    private static final String TAG_NAME = "name";
     private static final String TAG_TITLE = "title";
     private static final String TAG_NDESCRIPTION = "ndescription";
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_NEWSPIC = "newspic";
     private static final String TAG_JSONSTRING = "jsonstring";
-    private static final String TAG_SHIRTS_PID = "pid";
+    private static final String TAG_PRICE = "price";
+    private static final String TAG_SIZES = "sizes";
+    private static final String TAG_COLORS = "colors";
 
     // products JSONArray
     JSONArray products = null;
     JSONArray shirtsproducts = null;
+    JSONArray jacketsproducts = null;
+    JSONArray sweatersproducts = null;
+    JSONArray hoodiesproducts = null;
+    JSONArray miscproducts = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+    //new LoadShirts().execute();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +156,10 @@ public class MainActivity extends AppCompatActivity {
         // Hashmap for ListView
         productsList = new ArrayList<HashMap<String, String>>();
         shirtsproductsList = new ArrayList<HashMap<String, String>>();
+        jacketsproductsList = new ArrayList<HashMap<String, String>>();
+        sweatersproductsList = new ArrayList<HashMap<String, String>>();
+        hoodiesproductsList = new ArrayList<HashMap<String, String>>();
+        miscproductsList = new ArrayList<HashMap<String, String>>();
         // Get listview
         //ListView lv = getListView();
 
@@ -145,6 +167,11 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        new LoadShirts().execute();
+        new LoadJackets().execute();
+        new LoadSweaters().execute();
+        new LoadHoodies().execute();
+        new LoadMisc().execute();
     }
 
 
@@ -285,12 +312,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(AdapterView<?> parent, View view,
                                             int position, long id) {
                         String json = lv.getItemAtPosition(position).toString();
-
-
-
                         String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
                         Log.d("string: ", requiredString);
-
 
                         try {
                             JSONObject obj = new JSONObject(requiredString);
@@ -341,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+        public View onCreateView(final LayoutInflater inflater,final ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.store_fragment, container, false);
             final Button shirts = (Button) rootView.findViewById(R.id.btnViewShirts);
@@ -351,17 +374,70 @@ public class MainActivity extends AppCompatActivity {
             final Button all = (Button) rootView.findViewById(R.id.btnViewAll);
             final Button jackets = (Button) rootView.findViewById(R.id.btnViewJackets);
             //final View listView = inflater.inflate(R.layout.shirts_list, container, false);
-            //final RelativeLayout RL = (RelativeLayout) container.findViewById(R.id.RL);
-
-
+            //new LoadShirts().execute();
+            /*
+            try {
+                Thread.sleep(5000);
+                // Do some stuff
+            } catch (Exception e) {
+                e.getLocalizedMessage();
+            }
+            Log.d("thread: ", "2");
+            //final ListView LV = (ListView) container.findViewById(R.id.shirtslist1);
+            */
 
 
             misc.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //final RelativeLayout RL = (RelativeLayout) container.findViewById(R.id.RL);
-                    //RL.setVisibility(View.INVISIBLE);
-                    //LV.setVisibility(View.VISIBLE);
+                    final ListView LV = (ListView) container.findViewById(R.id.misclist);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.miscbackbutton);
+                    final GridLayout miscgrid = (GridLayout) container.findViewById(R.id.miscgrid);
+                    back.setClickable(true);
+                    miscgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringmisc: ", requiredString);
+
+
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
+
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick(View view) {
+                            miscgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
 
                 }
             });
@@ -369,28 +445,148 @@ public class MainActivity extends AppCompatActivity {
             shirts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final ListView LV = (ListView) container.findViewById(R.id.shirtslist1);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.shirtsbackbutton);
+                    final GridLayout shirtsgrid = (GridLayout) container.findViewById(R.id.shirtsgrid);
+                    back.setClickable(true);
+                    shirtsgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringshirts: ", requiredString);
+
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick (View view){
+                            shirtsgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
 
                 }
             });
             sweaters.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final ListView LV = (ListView) container.findViewById(R.id.sweaterslist);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.sweatersbackbutton);
+                    final GridLayout sweatersgrid = (GridLayout) container.findViewById(R.id.sweatersgrid);
+                    back.setClickable(true);
+                    sweatersgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringsweaters: ", requiredString);
+
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick(View view) {
+                            sweatersgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
 
                 }
             });
             hoodies.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final ListView LV = (ListView) container.findViewById(R.id.hoodieslist);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.hoodiesbackbutton);
+                    final GridLayout hoodiesgrid = (GridLayout) container.findViewById(R.id.hoodiesgrid);
+                    back.setClickable(true);
+                    hoodiesgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringjackets: ", requiredString);
+
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick(View view) {
+                            hoodiesgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
 
                 }
             });
             jackets.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    final ListView LV = (ListView) container.findViewById(R.id.jacketslist);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.jacketsbackbutton);
+                    final GridLayout jacketsgrid = (GridLayout) container.findViewById(R.id.jacketsgrid);
+                    back.setClickable(true);
+                    jacketsgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringjackets: ", requiredString);
+
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick (View view){
+                            jacketsgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
 
                 }
             });
@@ -506,7 +702,8 @@ public class MainActivity extends AppCompatActivity {
                 new LoadAllProducts().execute();
                 return NewsFragment.newInstance(position + 1);
             } else if (position == 1) {
-                new LoadShirts().execute();
+
+
                 return StoreFragment.newInstance(position + 1);
             } else {
 
@@ -568,10 +765,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Checking for SUCCESS TAG
                 int success = json.getInt(TAG_SUCCESS);
-                Log.d("title: ", "1");
+
 
                 if (success == 1) {
-                    Log.d("title: ", "2");
+
                     // products found
                     // Getting Array of Products
                     products = json.getJSONArray(TAG_PRODUCTS);
@@ -685,28 +882,32 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("shirts: ", "2");
                     // products found
                     // Getting Array of Products
-                    shirtsproducts = json.getJSONArray(TAG_SHIRTS_PRODUCTS);
+                    shirtsproducts = json.getJSONArray(TAG_PRODUCTS);
 
                     // looping through All Products
                     for (int i = 0; i < shirtsproducts.length(); i++) {
                         JSONObject c = shirtsproducts.getJSONObject(i);
 
                         // Storing each json item in variable
-                        String pid = c.getString(TAG_SHIRTS_PID);
-                        String name = c.getString(TAG_SHIRTS_NAME);
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
 
                         String jsonstring = c.toString();
-                        Log.d("pid: ", pid);
-                        Log.d("name: ", name);
-                        Log.d("json: ", jsonstring);
+
 
 
                         // creating new HashMap
                         HashMap<String, String> shirtsmap = new HashMap<String, String>();
 
                         // adding each child node to HashMap key => value
-                        shirtsmap.put(TAG_SHIRTS_PID, pid);
-                        shirtsmap.put(TAG_SHIRTS_NAME, name);
+                        shirtsmap.put(TAG_NAME, name);
+                        shirtsmap.put(TAG_PID, pid);
+                        shirtsmap.put(TAG_PRICE, price);
+                        shirtsmap.put(TAG_SIZES, sizes);
+                        shirtsmap.put(TAG_COLORS, colors);
 
                         shirtsmap.put(TAG_JSONSTRING, jsonstring);
 
@@ -743,12 +944,475 @@ public class MainActivity extends AppCompatActivity {
                      * */
                     ListAdapter adapter = new SimpleAdapter(
                             MainActivity.this, shirtsproductsList,
-                            R.layout.shirts_list_item, new String[]{TAG_SHIRTS_PID,
-                            TAG_SHIRTS_NAME, TAG_JSONSTRING},
-                            new int[]{R.id.pid, R.id.name, R.id.jsonstring});
+                            R.layout.shirts_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
                     // updating listview
-                    ListView myList = (ListView) findViewById(R.id.shirtslist);
+                    ListView myList = (ListView) findViewById(R.id.shirtslist1);
                     myList.setAdapter(adapter);
+                    Log.d("thread: ", "1");
+                }
+            });
+
+        }
+
+    }
+
+    /**
+     * Background Async Task to Load all product by making HTTP Request
+     */
+    class LoadJackets extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog2 = new ProgressDialog(MainActivity.this);
+            pDialog2.setMessage("Loading jackets. Please wait...");
+            pDialog2.setIndeterminate(false);
+            pDialog2.setCancelable(false);
+            pDialog2.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_jackets, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Jackets: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+                Log.d("jackets: ", "1");
+
+                if (success == 1) {
+                    Log.d("jackets: ", "2");
+                    // products found
+                    // Getting Array of Products
+                    jacketsproducts = json.getJSONArray(TAG_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < jacketsproducts.length(); i++) {
+                        JSONObject c = jacketsproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
+
+                        String jsonstring = c.toString();
+
+
+
+                        // creating new HashMap
+                        HashMap<String, String> jacketsmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        jacketsmap.put(TAG_NAME, name);
+                        jacketsmap.put(TAG_PID, pid);
+                        jacketsmap.put(TAG_PRICE, price);
+                        jacketsmap.put(TAG_SIZES, sizes);
+                        jacketsmap.put(TAG_COLORS, colors);
+
+                        jacketsmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        jacketsproductsList.add(jacketsmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog2.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, jacketsproductsList,
+                            R.layout.jackets_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.jacketslist);
+                    myList.setAdapter(adapter);
+                    Log.d("thread: ", "1");
+                }
+            });
+
+        }
+
+    }
+
+    /**
+     * Background Async Task to Load all product by making HTTP Request
+     */
+    class LoadSweaters extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog3 = new ProgressDialog(MainActivity.this);
+            pDialog3.setMessage("Loading sweaters. Please wait...");
+            pDialog3.setIndeterminate(false);
+            pDialog3.setCancelable(false);
+            pDialog3.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_sweaters, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Sweaters: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+                Log.d("sweaters: ", "1");
+
+                if (success == 1) {
+                    Log.d("sweaters: ", "2");
+                    // products found
+                    // Getting Array of Products
+                    sweatersproducts = json.getJSONArray(TAG_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < sweatersproducts.length(); i++) {
+                        JSONObject c = sweatersproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
+
+                        String jsonstring = c.toString();
+
+
+
+                        // creating new HashMap
+                        HashMap<String, String> sweatersmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        sweatersmap.put(TAG_NAME, name);
+                        sweatersmap.put(TAG_PID, pid);
+                        sweatersmap.put(TAG_PRICE, price);
+                        sweatersmap.put(TAG_SIZES, sizes);
+                        sweatersmap.put(TAG_COLORS, colors);
+
+                        sweatersmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        sweatersproductsList.add(sweatersmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog3.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, sweatersproductsList,
+                            R.layout.sweaters_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.sweaterslist);
+                    myList.setAdapter(adapter);
+                    Log.d("thread: ", "1");
+                }
+            });
+
+        }
+
+    }
+
+
+    /**
+     * Background Async Task to Load all product by making HTTP Request
+     */
+    class LoadHoodies extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog4 = new ProgressDialog(MainActivity.this);
+            pDialog4.setMessage("Loading sweaters. Please wait...");
+            pDialog4.setIndeterminate(false);
+            pDialog4.setCancelable(false);
+            pDialog4.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_hoodies, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Hoodies: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+
+                if (success == 1) {
+
+                    // products found
+                    // Getting Array of Products
+                    hoodiesproducts = json.getJSONArray(TAG_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < hoodiesproducts.length(); i++) {
+                        JSONObject c = hoodiesproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
+
+                        String jsonstring = c.toString();
+
+
+
+                        // creating new HashMap
+                        HashMap<String, String> hoodiesmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        hoodiesmap.put(TAG_NAME, name);
+                        hoodiesmap.put(TAG_PID, pid);
+                        hoodiesmap.put(TAG_PRICE, price);
+                        hoodiesmap.put(TAG_SIZES, sizes);
+                        hoodiesmap.put(TAG_COLORS, colors);
+
+                        hoodiesmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        hoodiesproductsList.add(hoodiesmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog4.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, hoodiesproductsList,
+                            R.layout.hoodies_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.hoodieslist);
+                    myList.setAdapter(adapter);
+
+                }
+            });
+
+        }
+
+    }
+
+
+    /**
+     * Background Async Task to Load all product by making HTTP Request
+     */
+    class LoadMisc extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog5 = new ProgressDialog(MainActivity.this);
+            pDialog5.setMessage("Loading misc. Please wait...");
+            pDialog5.setIndeterminate(false);
+            pDialog5.setCancelable(false);
+            pDialog5.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_misc, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Misc: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+
+                if (success == 1) {
+
+                    // products found
+                    // Getting Array of Products
+                    miscproducts = json.getJSONArray(TAG_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < miscproducts.length(); i++) {
+                        JSONObject c = miscproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
+
+                        String jsonstring = c.toString();
+
+
+
+                        // creating new HashMap
+                        HashMap<String, String> miscmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        miscmap.put(TAG_NAME, name);
+                        miscmap.put(TAG_PID, pid);
+                        miscmap.put(TAG_PRICE, price);
+                        miscmap.put(TAG_SIZES, sizes);
+                        miscmap.put(TAG_COLORS, colors);
+
+                        miscmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        miscproductsList.add(miscmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog5.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, miscproductsList,
+                            R.layout.misc_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.misclist);
+                    myList.setAdapter(adapter);
+
                 }
             });
 

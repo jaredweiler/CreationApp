@@ -41,7 +41,7 @@ import android.widget.TextView;
 import android.view.LayoutInflater;
 import org.apache.http.*;
 
-public class AllProductsActivity extends ListActivity {
+public class InProductActivity extends ListActivity {
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -61,7 +61,7 @@ public class AllProductsActivity extends ListActivity {
     private static final String TAG_PRODUCTS = "products";
     private static final String TAG_PID = "pid";
     private static final String TAG_NAME = "name";
-    private static final String TAG_TITLE = "title";
+    private static final String TAG_PRICE = "price";
     private static final String TAG_NDESCRIPTION = "ndescription";
     private static final String TAG_AUTHOR = "author";
     private static final String TAG_NEWSPIC = "newspic";
@@ -123,26 +123,28 @@ public class AllProductsActivity extends ListActivity {
 
     }
 
-    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, String title, String author, String desc, String newspic, int pid) {
+    public void ShowPopup(View anchorView, final ViewGroup container, final LayoutInflater inflater, int pid, String name, int price, String sizes, String colors) {
 
-        View popupView = inflater.inflate(R.layout.popuplayout, container, false);
+        View popupView = inflater.inflate(R.layout.productpopout, container, false);
 
         //PopupWindow popupWindow = new PopupWindow(popupView, GridLayout.LayoutParams.WRAP_CONTENT, GridLayout.LayoutParams.WRAP_CONTENT);
         PopupWindow popupWindow = new PopupWindow(popupView, 600, 800);
 
         // Example: If you have a TextView inside `popup_layout.xml`
-        TextView tv_title = (TextView) popupView.findViewById(R.id.poptext1);
-        TextView tv2_author = (TextView) popupView.findViewById(R.id.poptext2);
-        TextView tv3_desc = (TextView) popupView.findViewById(R.id.poptext3);
-        TextView tv4_date = (TextView) popupView.findViewById(R.id.poptextdate);
+        TextView tv_title = (TextView) popupView.findViewById(R.id.prodname);
+        TextView tv2_author = (TextView) popupView.findViewById(R.id.prodsizes);
+        TextView tv3_desc = (TextView) popupView.findViewById(R.id.prodcolors);
+        TextView tv4_date = (TextView) popupView.findViewById(R.id.prodprice);
 
-        tv_title.setText(title);
-        String fulldate = ("Date: " + newspic);
-        tv4_date.setText(fulldate);
-        String fullauthor = ("By: " + author);
-        tv2_author.setText(fullauthor);
-        tv3_desc.setText(desc);
-        ImageView img = (ImageView) popupView.findViewById(R.id.image);
+        tv_title.setText(name);
+        String sprice = Integer.toString(price);
+        String fullprice = ("Price: $" + sprice);
+        tv4_date.setText(fullprice);
+        String fullsizes = ("Sizes: " + sizes);
+        tv2_author.setText(fullsizes);
+        String fullcolors = ("Colors: " + colors);
+        tv3_desc.setText(fullcolors);
+        ImageView img = (ImageView) popupView.findViewById(R.id.prodimage);
 
         switch (pid) {
             case 0:
