@@ -146,16 +146,31 @@ public class AllProductsActivity extends ListActivity {
 
         switch (pid) {
             case 0:
-                Log.d("Switch: ", "0");
                 img.setImageResource(R.drawable.carina);
                 break;
             case 1:
-                Log.d("Switch: ", "1");
                 img.setImageResource(R.drawable.dano);
                 break;
             case 2:
-                Log.d("Switch: ", "2");
                 img.setImageResource(R.drawable.carina);
+                break;
+            case 20:
+                img.setImageResource(R.drawable.jasmine);
+                break;
+            case 21:
+                img.setImageResource(R.drawable.shamitlathrop);
+                break;
+            case 22:
+                img.setImageResource(R.drawable.hunter);
+                break;
+            case 23:
+                img.setImageResource(R.drawable.sophietie);
+                break;
+            case 24:
+                img.setImageResource(R.drawable.hatnews);
+                break;
+            case 25:
+                img.setImageResource(R.drawable.christina);
                 break;
         }
 
