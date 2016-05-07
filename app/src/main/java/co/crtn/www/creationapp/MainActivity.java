@@ -49,6 +49,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import android.app.ListActivity;
+import android.os.Bundle;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressDialog pDialog3;
     private ProgressDialog pDialog4;
     private ProgressDialog pDialog5;
+    private ProgressDialog pDialog6;
 
     // Creating JSON Parser object
     JSONParser jParser = new JSONParser();
@@ -86,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> sweatersproductsList;
     ArrayList<HashMap<String, String>> hoodiesproductsList;
     ArrayList<HashMap<String, String>> miscproductsList;
+    ArrayList<HashMap<String, String>> allproductsList;
 
     // url to get all products list
     private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
@@ -94,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
     private static String url_sweaters = "http://10.0.2.2:8080/android_connect/get_sweaters.php";
     private static String url_hoodies = "http://10.0.2.2:8080/android_connect/get_hoodies.php";
     private static String url_misc = "http://10.0.2.2:8080/android_connect/get_misc.php";
+    private static String url_all = "http://10.0.2.2:8080/android_connect/get_all.php";
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -109,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_SIZES = "sizes";
     private static final String TAG_COLORS = "colors";
 
+
+
+
     // products JSONArray
     JSONArray products = null;
     JSONArray shirtsproducts = null;
@@ -116,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
     JSONArray sweatersproducts = null;
     JSONArray hoodiesproducts = null;
     JSONArray miscproducts = null;
+    JSONArray allproducts = null;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -143,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
         mViewPager.setOffscreenPageLimit(3);
 
-
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+        */
 
         // Hashmap for ListView
         productsList = new ArrayList<HashMap<String, String>>();
@@ -160,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         sweatersproductsList = new ArrayList<HashMap<String, String>>();
         hoodiesproductsList = new ArrayList<HashMap<String, String>>();
         miscproductsList = new ArrayList<HashMap<String, String>>();
+        allproductsList = new ArrayList<HashMap<String, String>>();
         // Get listview
         //ListView lv = getListView();
 
@@ -172,6 +184,9 @@ public class MainActivity extends AppCompatActivity {
         new LoadSweaters().execute();
         new LoadHoodies().execute();
         new LoadMisc().execute();
+        //new LoadAll().execute();
+
+
     }
 
 
@@ -265,8 +280,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.shirts_list, container, false);
-            //final ListView lv = (ListView) rootView.findViewById(R.id.shirtslist);
+            final View rootView = inflater.inflate(R.layout.twitter_tab, container, false);
+
+            final Button button = (Button) rootView.findViewById(R.id.twitterbutton);
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getActivity().getApplication(),
+                            TwitterActivity.class);
+                    startActivity(i);
+
+                }
+            });
             //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             //textView.setText("Hello");
             return rootView;
@@ -372,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
             final Button sweaters = (Button) rootView.findViewById(R.id.btnViewSweaters);
             final Button hoodies = (Button) rootView.findViewById(R.id.btnViewHoodies);
             final Button all = (Button) rootView.findViewById(R.id.btnViewAll);
+            all.setVisibility(View.INVISIBLE);
             final Button jackets = (Button) rootView.findViewById(R.id.btnViewJackets);
             //final View listView = inflater.inflate(R.layout.shirts_list, container, false);
             //new LoadShirts().execute();
@@ -656,10 +683,60 @@ public class MainActivity extends AppCompatActivity {
             all.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    /*
+                    final ListView LV = (ListView) container.findViewById(R.id.alllist);
+                    final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
+                    final Button back = (Button) container.findViewById(R.id.allbackbutton);
+                    final GridLayout allgrid = (GridLayout) container.findViewById(R.id.allgrid);
+                    back.setClickable(true);
+                    allgrid.setVisibility(View.VISIBLE);
+                    GL1.setVisibility(View.INVISIBLE);
+                    if (LV != null) {
+                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view,
+                                                    int position, long id) {
+                                String json = LV.getItemAtPosition(position).toString();
+                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
+                                Log.d("stringjackets: ", requiredString);
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
+
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
+
+                            }
+
+                        });
+                    }
+
+                    back.setOnClickListener(new View.OnClickListener() {
+                        //shirts.setText("dsfgsfd");
+                        @Override
+                        public void onClick (View view){
+                            allgrid.setVisibility(View.INVISIBLE);
+                            GL1.setVisibility(View.VISIBLE);
+                        }
+
+                    });
+                    */
 
                 }
+
             });
+
             return rootView;
         }
     }
@@ -1474,6 +1551,118 @@ public class MainActivity extends AppCompatActivity {
                             new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
                     // updating listview
                     ListView myList = (ListView) findViewById(R.id.misclist);
+                    myList.setAdapter(adapter);
+
+                }
+            });
+
+        }
+
+    }
+
+    class LoadAll extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog6 = new ProgressDialog(MainActivity.this);
+            pDialog6.setMessage("Loading misc. Please wait...");
+            pDialog6.setIndeterminate(false);
+            pDialog6.setCancelable(false);
+            pDialog6.show();
+        }
+
+        /**
+         * getting All products from url
+         */
+        protected String doInBackground(String... args) {
+            // Building Parameters
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // getting JSON string from URL
+            JSONObject json = jParser.makeHttpRequest(url_misc, "GET", params);
+
+            // Check your log cat for JSON reponse
+            Log.d("All Misc: ", json.toString());
+
+            try {
+                // Checking for SUCCESS TAG
+                int success = json.getInt(TAG_SUCCESS);
+
+
+                if (success == 1) {
+
+                    // products found
+                    // Getting Array of Products
+                    allproducts = json.getJSONArray(TAG_PRODUCTS);
+
+                    // looping through All Products
+                    for (int i = 0; i < allproducts.length(); i++) {
+                        JSONObject c = allproducts.getJSONObject(i);
+
+                        // Storing each json item in variable
+                        String name = c.getString(TAG_NAME);
+                        String pid = c.getString(TAG_PID);
+                        String price = c.getString(TAG_PRICE);
+                        String sizes = c.getString(TAG_SIZES);
+                        String colors = c.getString(TAG_COLORS);
+
+                        String jsonstring = c.toString();
+
+
+
+                        // creating new HashMap
+                        HashMap<String, String> allmap = new HashMap<String, String>();
+
+                        // adding each child node to HashMap key => value
+                        allmap.put(TAG_NAME, name);
+                        allmap.put(TAG_PID, pid);
+                        allmap.put(TAG_PRICE, price);
+                        allmap.put(TAG_SIZES, sizes);
+                        allmap.put(TAG_COLORS, colors);
+
+                        allmap.put(TAG_JSONSTRING, jsonstring);
+
+                        // adding HashList to ArrayList
+                        allproductsList.add(allmap);
+                    }
+                } else {
+                    // no products found
+                    // Launch Add New product Activity
+                    Intent i = new Intent(getApplicationContext(),
+                            NoNewsActivity.class);
+                    // Closing all previous activities
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog
+         **/
+        protected void onPostExecute(String file_url) {
+            // dismiss the dialog after getting all products
+            pDialog6.dismiss();
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    /**
+                     * Updating parsed JSON data into ListView
+                     * */
+                    ListAdapter adapter = new SimpleAdapter(
+                            MainActivity.this, allproductsList,
+                            R.layout.all_list_item, new String[]{TAG_NAME,
+                            TAG_PID, TAG_PRICE, TAG_SIZES, TAG_COLORS, TAG_JSONSTRING},
+                            new int[]{R.id.name, R.id.pid, R.id.price, R.id.sizes, R.id.colors, R.id.jsonstring});
+                    // updating listview
+                    ListView myList = (ListView) findViewById(R.id.alllist);
                     myList.setAdapter(adapter);
 
                 }

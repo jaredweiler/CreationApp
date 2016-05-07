@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+    <FrameLayout
+    android:paddingRight="15dp"
+    android:paddingLeft="15dp"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+    android:paddingRight="15dp"
+    android:paddingLeft="15dp" android:layout_height="wrap_content"
+    android:layout_width="match_parent" android:showDividers="none"
+    android:divider="@null"
+    android:background="@drawable/bg_card"
+    android:layout_marginBottom="4dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginLeft="6dp"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="TextView"
+         android:id="@+id/listTextView"/>
+
+</LinearLayout>
+
+</FrameLayout>
