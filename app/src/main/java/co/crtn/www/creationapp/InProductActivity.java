@@ -147,17 +147,56 @@ public class InProductActivity extends ListActivity {
         ImageView img = (ImageView) popupView.findViewById(R.id.prodimage);
 
         switch (pid) {
-            case 0:
-                Log.d("Switch: ", "0");
-                img.setImageResource(R.drawable.carina);
+            case 3:
+                img.setImageResource(R.drawable.civjacket);
                 break;
-            case 1:
-                Log.d("Switch: ", "1");
-                img.setImageResource(R.drawable.dano);
+            case 4:
+                img.setImageResource(R.drawable.civjacket);
                 break;
-            case 2:
-                Log.d("Switch: ", "2");
-                img.setImageResource(R.drawable.carina);
+            case 5:
+                img.setImageResource(R.drawable.bernietee);
+                break;
+            case 6:
+                img.setImageResource(R.drawable.ezaletee);
+                break;
+            case 7:
+                img.setImageResource(R.drawable.ninex);
+                break;
+            case 8:
+                img.setImageResource(R.drawable.distee);
+                break;
+            case 9:
+                img.setImageResource(R.drawable.anniversarytee);
+                break;
+            case 10:
+                img.setImageResource(R.drawable.barsticker);
+                break;
+            case 11:
+                img.setImageResource(R.drawable.stickerpack);
+                break;
+            case 12:
+                img.setImageResource(R.drawable.pombeanie);
+                break;
+            case 13:
+                img.setImageResource(R.drawable.noisesweatshirt);
+                break;
+            case 14:
+                img.setImageResource(R.drawable.soulcrew);
+                break;
+            case 15:
+                img.setImageResource(R.drawable.ogcrew);
+                break;
+            case 16:
+                img.setImageResource(R.drawable.varsityhoodie);
+                break;
+            case 17:
+                img.setImageResource(R.drawable.disobeyhoodie);
+                break;
+            case 18:
+                img.setImageResource(R.drawable.wolfhoodie);
+                break;
+            case 19:
+                img.setImageResource(R.drawable.twentyx);
                 break;
         }
 

@@ -461,6 +461,22 @@ public class MainActivity extends AppCompatActivity {
                                 String json = LV.getItemAtPosition(position).toString();
                                 String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
                                 Log.d("stringshirts: ", requiredString);
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
+
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
 
                             }
 
@@ -498,7 +514,22 @@ public class MainActivity extends AppCompatActivity {
                                 String json = LV.getItemAtPosition(position).toString();
                                 String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
                                 Log.d("stringsweaters: ", requiredString);
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
 
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
                             }
 
                         });
@@ -535,6 +566,22 @@ public class MainActivity extends AppCompatActivity {
                                 String json = LV.getItemAtPosition(position).toString();
                                 String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
                                 Log.d("stringjackets: ", requiredString);
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
+
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
 
                             }
 
@@ -572,6 +619,22 @@ public class MainActivity extends AppCompatActivity {
                                 String json = LV.getItemAtPosition(position).toString();
                                 String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
                                 Log.d("stringjackets: ", requiredString);
+                                try {
+                                    JSONObject obj = new JSONObject(requiredString);
+                                    String name = obj.getString("name");
+                                    String price = obj.getString("price");
+                                    String sizes = obj.getString("sizes");
+                                    String colors = obj.getString("colors");
+                                    String stringid = obj.getString("pid");
+                                    int pid = Integer.parseInt(stringid);
+                                    int priceint = Integer.parseInt(price);
+
+                                    InProductActivity ipa = new InProductActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+
+                                } catch (Throwable t) {
+                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
+                                }
 
                             }
 
