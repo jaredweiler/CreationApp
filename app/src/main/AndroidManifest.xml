@@ -22,7 +22,7 @@
 
         <!-- All Product Activity -->
         <activity
-            android:name=".AllProductsActivity"
+            android:name=".DisplayNewsActivity"
             android:label="All Products" >
         </activity>
         <activity

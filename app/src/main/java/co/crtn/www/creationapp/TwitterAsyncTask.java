@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class TwitterAsyncTask extends AsyncTask<Object, Void, ArrayList<TwitterTweet>> {
     ListActivity callerActivity;
 
+    //Keys from Twitter "create app" website
     final static String TWITTER_API_KEY = "DdWPHF1DAIo5vw9jSC7foL5ZS";
     final static String TWITTER_API_SECRET = "fUoPZELAEw4XK3NOdPxMLfxv7V7ydCYhynVEY9e1V1FvzLdUmz";
 

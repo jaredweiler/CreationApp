@@ -1,23 +1,17 @@
 package co.crtn.www.creationapp;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
-import android.view.Gravity;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.*;
-import android.widget.GridLayout.LayoutParams;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,12 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.graphics.drawable.ColorDrawable;
 
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -49,9 +41,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import android.app.ListActivity;
-import android.os.Bundle;
-import android.util.Log;
+import java.util.LinkedList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
 
+    private static String url = "http://10.0.2.2:80/android_connect/";
 
+    private static final LinkedList cartlist = new LinkedList();
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -93,24 +85,24 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<HashMap<String, String>> allproductsList;
 
     // url to get all products list
-    /*
-    private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
-    private static String url_shirts = "http://10.0.2.2:8080/android_connect/get_shirts.php";
-    private static String url_jackets = "http://10.0.2.2:8080/android_connect/get_jackets.php";
-    private static String url_sweaters = "http://10.0.2.2:8080/android_connect/get_sweaters.php";
-    private static String url_hoodies = "http://10.0.2.2:8080/android_connect/get_hoodies.php";
-    private static String url_misc = "http://10.0.2.2:8080/android_connect/get_misc.php";
-    private static String url_all = "http://10.0.2.2:8080/android_connect/get_all.php";
-*/
 
-    private static String url_all_products = "http://192.168.0.192:8080/android_connect/get_all_products.php";
-    private static String url_shirts = "http://192.168.0.192:8080/android_connect/get_shirts.php";
-    private static String url_jackets = "http://192.168.0.192:8080/android_connect/get_jackets.php";
-    private static String url_sweaters = "http://192.168.0.192:8080/android_connect/get_sweaters.php";
-    private static String url_hoodies = "http://192.168.0.192:8080/android_connect/get_hoodies.php";
-    private static String url_misc = "http://192.168.0.192:8080/android_connect/get_misc.php";
-    private static String url_all = "http://192.168.0.192:8080/android_connect/get_all.php";
-    
+    private static String url_all_products = url + "get_all_products.php";
+    private static String url_shirts = url + "get_shirts.php";
+    private static String url_jackets = url + "get_jackets.php";
+    private static String url_sweaters = url + "get_sweaters.php";
+    private static String url_hoodies = url + "get_hoodies.php";
+    private static String url_misc = url + "get_misc.php";
+    private static String url_all = url + "get_all.php";
+
+/*
+    private static String url_all_products = "http://10.10.207.64:8080/android_connect/get_all_products.php";
+    private static String url_shirts = "http://10.10.207.64:8080/android_connect/get_shirts.php";
+    private static String url_jackets = "http://10.10.207.64:8080/android_connect/get_jackets.php";
+    private static String url_sweaters = "http://10.10.207.64:8080/android_connect/get_sweaters.php";
+    private static String url_hoodies = "http://10.10.207.64:8080/android_connect/get_hoodies.php";
+    private static String url_misc = "http://10.10.207.64:8080/android_connect/get_misc.php";
+    private static String url_all = "http://10.10.207.64:8080/android_connect/get_all.php";
+*/
 
     // JSON Node names
     private static final String TAG_SUCCESS = "success";
@@ -144,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     private GoogleApiClient client;
     //new LoadShirts().execute();
 
+    //onCreate is called when the program first runs
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,11 +152,13 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        //instance tab layout
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         mViewPager.setOffscreenPageLimit(3);
 
+        //I personally took out the tab layout
         /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -190,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        //below the API indexing I added the functions that need to execute to grab all the inforamtion from the database
         new LoadShirts().execute();
         new LoadJackets().execute();
         new LoadSweaters().execute();
@@ -264,24 +260,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * This Fragment is where the Twitter tab will be displayed
      */
-    public static class PlaceholderFragment extends Fragment {
+    public static class TwitterFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public PlaceholderFragment() {
+        public TwitterFragment() {
         }
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
+        public static TwitterFragment newInstance(int sectionNumber) {
+            TwitterFragment fragment = new TwitterFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
@@ -298,14 +294,14 @@ public class MainActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //This starts the activity that contains all of the Twitter functionality
                     Intent i = new Intent(getActivity().getApplication(),
                             TwitterActivity.class);
                     startActivity(i);
 
                 }
             });
-            //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            //textView.setText("Hello");
+
             return rootView;
         }
     }
@@ -360,8 +356,8 @@ public class MainActivity extends AppCompatActivity {
                             String author = obj.getString("author");
                             String stringid = obj.getString("pid");
                             int pid = Integer.parseInt(stringid);
-                            //Log.d("My App", n);
-                            AllProductsActivity apa = new AllProductsActivity();
+
+                            DisplayNewsActivity apa = new DisplayNewsActivity();
                             apa.ShowPopup(view, container, inflater, title, author, ndesc, newspic, pid);
 
                         } catch (Throwable t) {
@@ -408,8 +404,8 @@ public class MainActivity extends AppCompatActivity {
             final Button misc = (Button) rootView.findViewById(R.id.btnViewMisc);
             final Button sweaters = (Button) rootView.findViewById(R.id.btnViewSweaters);
             final Button hoodies = (Button) rootView.findViewById(R.id.btnViewHoodies);
-            final Button all = (Button) rootView.findViewById(R.id.btnViewAll);
-            all.setVisibility(View.INVISIBLE);
+            final Button cart = (Button) rootView.findViewById(R.id.btnViewCart);
+
             final Button jackets = (Button) rootView.findViewById(R.id.btnViewJackets);
             //final View listView = inflater.inflate(R.layout.shirts_list, container, false);
             //new LoadShirts().execute();
@@ -456,8 +452,8 @@ public class MainActivity extends AppCompatActivity {
                                     int pid = Integer.parseInt(stringid);
                                     int priceint = Integer.parseInt(price);
 
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+                                    DisplayStoreItemActivity ipa = new DisplayStoreItemActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors, cartlist);
 
                                 } catch (Throwable t) {
                                     Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -509,8 +505,8 @@ public class MainActivity extends AppCompatActivity {
                                     int pid = Integer.parseInt(stringid);
                                     int priceint = Integer.parseInt(price);
 
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+                                    DisplayStoreItemActivity ipa = new DisplayStoreItemActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors, cartlist);
 
                                 } catch (Throwable t) {
                                     Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -562,8 +558,8 @@ public class MainActivity extends AppCompatActivity {
                                     int pid = Integer.parseInt(stringid);
                                     int priceint = Integer.parseInt(price);
 
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+                                    DisplayStoreItemActivity ipa = new DisplayStoreItemActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors, cartlist);
 
                                 } catch (Throwable t) {
                                     Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -614,8 +610,8 @@ public class MainActivity extends AppCompatActivity {
                                     int pid = Integer.parseInt(stringid);
                                     int priceint = Integer.parseInt(price);
 
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+                                    DisplayStoreItemActivity ipa = new DisplayStoreItemActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors, cartlist);
 
                                 } catch (Throwable t) {
                                     Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -667,8 +663,8 @@ public class MainActivity extends AppCompatActivity {
                                     int pid = Integer.parseInt(stringid);
                                     int priceint = Integer.parseInt(price);
 
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
+                                    DisplayStoreItemActivity ipa = new DisplayStoreItemActivity();
+                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors, cartlist);
 
                                 } catch (Throwable t) {
                                     Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
@@ -691,58 +687,26 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-            all.setOnClickListener(new View.OnClickListener() {
+            cart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    /*
-                    final ListView LV = (ListView) container.findViewById(R.id.alllist);
+                    final ListView LV = (ListView) container.findViewById(R.id.cartlist);
                     final GridLayout GL1 = (GridLayout) container.findViewById(R.id.gl1);
-                    final Button back = (Button) container.findViewById(R.id.allbackbutton);
-                    final GridLayout allgrid = (GridLayout) container.findViewById(R.id.allgrid);
+                    final Button back = (Button) container.findViewById(R.id.cartbackbutton);
+                    final GridLayout cartgrid = (GridLayout) container.findViewById(R.id.cartgrid);
                     back.setClickable(true);
-                    allgrid.setVisibility(View.VISIBLE);
+                    cartgrid.setVisibility(View.VISIBLE);
                     GL1.setVisibility(View.INVISIBLE);
-                    if (LV != null) {
-                        LV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view,
-                                                    int position, long id) {
-                                String json = LV.getItemAtPosition(position).toString();
-                                String requiredString = json.substring(json.indexOf("jsonstring=") + 11, json.indexOf("}") + 1);
-                                Log.d("stringjackets: ", requiredString);
-                                try {
-                                    JSONObject obj = new JSONObject(requiredString);
-                                    String name = obj.getString("name");
-                                    String price = obj.getString("price");
-                                    String sizes = obj.getString("sizes");
-                                    String colors = obj.getString("colors");
-                                    String stringid = obj.getString("pid");
-                                    int pid = Integer.parseInt(stringid);
-                                    int priceint = Integer.parseInt(price);
-
-                                    InProductActivity ipa = new InProductActivity();
-                                    ipa.ShowPopup(view, container, inflater, pid, name, priceint, sizes, colors);
-
-                                } catch (Throwable t) {
-                                    Log.e("My App", "Could not parse malformed JSON: \"" + json + "\"");
-                                }
-
-                            }
-
-                        });
-                    }
 
                     back.setOnClickListener(new View.OnClickListener() {
                         //shirts.setText("dsfgsfd");
                         @Override
-                        public void onClick (View view){
-                            allgrid.setVisibility(View.INVISIBLE);
+                        public void onClick(View view) {
+                            cartgrid.setVisibility(View.INVISIBLE);
                             GL1.setVisibility(View.VISIBLE);
                         }
 
                     });
-                    */
 
                 }
 
@@ -756,80 +720,12 @@ public class MainActivity extends AppCompatActivity {
     //-----------------------------------------------------------------------------------------------------------------------------
 
 
-    public static class NewsButton extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        Button btnViewProducts;
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        public NewsButton() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static NewsButton newInstance(int sectionNumber) {
-            NewsButton fragment = new NewsButton();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.shirts_list, container, false);
-            final ListView lv = (ListView) rootView.findViewById(R.id.shirtslist);
-
-
-
-
-            return rootView;
-
-        }
-    }
 
 
     //-----------------------------------------------------------------------------------------------------------------------------
 
 
-    public static class NewsTestFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        public NewsTestFragment() {
-        }
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static NewsTestFragment newInstance(int sectionNumber) {
-            NewsTestFragment fragment = new NewsTestFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.news_test, container, false);
-            //TextView textView = (TextView) rootView.findViewById(R.id.test_label);
-            //textView.setText("store frag!");
-            //Intent i = new Intent(getActivity(), AllProductsActivity.class);
-            //startActivity(i);
-            return rootView;
-        }
-    }
 
 
 //-----------------------------------------------------------------------------------------------------------------------------
@@ -847,10 +743,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+            // Return a TwitterFragment (defined as a static inner class below).
 
             if (position == 0) {
-                new LoadAllProducts().execute();
+                new LoadAllNews().execute();
                 return NewsFragment.newInstance(position + 1);
             } else if (position == 1) {
 
@@ -858,7 +754,7 @@ public class MainActivity extends AppCompatActivity {
                 return StoreFragment.newInstance(position + 1);
             } else {
 
-                return PlaceholderFragment.newInstance(position + 1);
+                return TwitterFragment.newInstance(position + 1);
             }
         }
 
@@ -886,7 +782,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Background Async Task to Load all product by making HTTP Request
      */
-    class LoadAllProducts extends AsyncTask<String, String, String> {
+    class LoadAllNews extends AsyncTask<String, String, String> {
 
         /**
          * Before starting background thread Show Progress Dialog
@@ -1027,10 +923,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 // Checking for SUCCESS TAG
                 int success = json.getInt(TAG_SUCCESS);
-                Log.d("shirts: ", "1");
+
 
                 if (success == 1) {
-                    Log.d("shirts: ", "2");
+
                     // products found
                     // Getting Array of Products
                     shirtsproducts = json.getJSONArray(TAG_PRODUCTS);
@@ -1101,7 +997,7 @@ public class MainActivity extends AppCompatActivity {
                     // updating listview
                     ListView myList = (ListView) findViewById(R.id.shirtslist1);
                     myList.setAdapter(adapter);
-                    Log.d("thread: ", "1");
+
                 }
             });
 

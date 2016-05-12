@@ -19,6 +19,7 @@ public class TwitterAPI {
 
     private String twitterApiKey;
     private String twitterAPISecret;
+    //Tokens got from Twitter website
     final static String TWITTER_TOKEN_URL = "https://api.twitter.com/oauth2/token";
     final static String TWITTER_STREAM_URL = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=";
 

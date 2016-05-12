@@ -4,20 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.BufferedHttpEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 
 import android.app.ListActivity;
@@ -31,6 +18,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -41,7 +29,7 @@ import android.widget.TextView;
 import android.view.LayoutInflater;
 import org.apache.http.*;
 
-public class AllProductsActivity extends ListActivity {
+public class DisplayNewsActivity extends ListActivity {
 
     // Progress Dialog
     private ProgressDialog pDialog;
@@ -53,21 +41,13 @@ public class AllProductsActivity extends ListActivity {
 
     ArrayList<HashMap<String, String>> productsList;
 
-    // url to get all products list
-    private static String url_all_products = "http://10.0.2.2:8080/android_connect/get_all_products.php";
 
-    // JSON Node names
-    private static final String TAG_SUCCESS = "success";
-    private static final String TAG_PRODUCTS = "products";
+
+
     private static final String TAG_PID = "pid";
-    private static final String TAG_NAME = "name";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_NDESCRIPTION = "ndescription";
-    private static final String TAG_AUTHOR = "author";
-    private static final String TAG_NEWSPIC = "newspic";
 
-    // products JSONArray
-    JSONArray products = null;
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +58,7 @@ public class AllProductsActivity extends ListActivity {
         productsList = new ArrayList<HashMap<String, String>>();
 
         // Loading products in Background Thread
-        //new LoadAllProducts().execute();
+        //new LoadAllNews().execute();
 
         // Get listview
         ListView lv = getListView();
@@ -135,6 +115,7 @@ public class AllProductsActivity extends ListActivity {
         TextView tv2_author = (TextView) popupView.findViewById(R.id.poptext2);
         TextView tv3_desc = (TextView) popupView.findViewById(R.id.poptext3);
         TextView tv4_date = (TextView) popupView.findViewById(R.id.poptextdate);
+
 
         tv_title.setText(title);
         String fulldate = ("Date: " + newspic);
